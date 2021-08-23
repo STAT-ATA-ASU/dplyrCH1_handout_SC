@@ -1,0 +1,159 @@
+---
+title: "Introduction to `dplyr` and `tbls`"
+date: 'Last compiled: `r format(Sys.time(), "%b %d, %Y")`'
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r, label = "SETUP", echo = FALSE, results= 'hide', message = FALSE, warning = FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, comment = NA, fig.align = "center", fig.width = 4, fig.height = 4, message = FALSE, warning = FALSE)
+library(dplyr)
+library(hflights)
+library(scales)
+```
+
+_________________
+
+## Introduction
+
+Welcome to the exercises part of your `dplyr` handout. Here you will learn the ins and outs of working with `dplyr`. `dplyr` is an `R` package, a collection of functions and data sets that enhance the `R` language. Before you can use the `dplyr` package with `R`, you need to download it, then you will need to load it.
+
+```{r, label = "install", eval = FALSE}
+install.packages("dplyr")
+```
+
+`install.packages()` puts an `R` package into your `R` library, where `R` can access it. With the `library()` command, you can effectively load a package into your `R` session so that you can use it. You only need to install a package onto your computer once, but you need to load it everytime you start a new `R` session.
+
+Throughout this handout, you will use `dplyr` to analyze a data set of airline flight data, containing flights that departed from Houston. This data is stored in a package called `hflights`.
+
+## Instructions
+
+* The `dplyr` package is already installed in the system library, but still needs to be loaded. Do this by passing the argument "dplyr" to the appropriate function introduced above.
+
+* Similarly, load the `hflights` package. Now, a variable called `hflights` is available, a `data.frame` representing the data set.  
+
+```{r, label = "instructions1", eval = FALSE}
+install.packages("hflights")
+```
+
+* To get a good feel of the data, take a first look at the data. A suggestion is to use `head()`, `tail()` or `summary()`. Can you derive the meaning of all columns?  You may want to also look at the help file for `hflights` by typing `?hflights` in the console.
+
+
+```{r}
+# Your code goes here
+
+
+```
+
+## Explore the data set
+
+A data scientist must be familiar with his or her data. Experiment with the data set in the console and maybe try to generate some insightful plots.
+
+```{r}
+# Your code goes here
+
+```
+
+How many observations and how many variables are contained in the `hflights` data set?
+
+```{r}
+# Your code goes here
+
+```
+
+There are `r comma(dim(hflights)[1])` observations on `r dim(hflights)[2]` variables.
+
+# Tibbles `tbl-df`
+
+```{r}
+hflights[1:5, 1:5] # Show first five rows and columns
+# Convert the hflights data.frame into a hflights tbl
+hflights <- tbl_df(hflights)
+# Display the hflights tbl
+hflights
+# Create a random subset of size 10,000 to work with
+set.seed(123)
+train <- sample(227496, 10000)
+hflights <- hflights[train, ]
+dim(hflights)
+# Create the object carriers, containing only the UniqueCarrier variable of hflights
+carriers <- hflights$UniqueCarrier
+```
+
+## Changing labels of `hflights`, part 1 of 2
+
+You can "clean" `hflights` the same way you would clean a `data.frame`. A bit of cleaning would be a good idea since the `UniqueCarrier` variable of `hflights` uses a confusing code system.
+
+You can create a lookup table with a named vector. When you subset the lookup table with a character string (like the character strings in `UniqueCarrier`), `R` will return the values of the lookup table that correspond to the names in the character string. To see how this works, run the following code in the console:
+
+```{r}
+two <- c("AA", "AS")
+lut <- c("AA" = "American", 
+         "AS" = "Alaska", 
+         "B6" = "JetBlue")
+two <- lut[two]
+two
+```
+
+## Instructions
+
+* Use `lut` to translate the `UniqueCarrier` column of `hflights` and assign its result again to the `UniqueCarrier` column.
+
+* It's rather hard to assess whether your solution is actually the right one, since the `UniqueCarrier` variable does not appear when you display `hflights`. Use the `glimpse()` function to inspect the raw values of the variables.
+
+Hint: The `c("AA"="American","AS"="Alaska",...)` code snippet creates a lookup table, a vector of names that each have their own value. Each name/value pair matches an old airline code with a new label that will replace it. When you subset the vector with `UniqueCarrier` (a list of old codes in their original order), you get a vector of labels (a list of new labels in the original order). Lookup tables are an easy way to recode variables in `R`.
+
+```{r}
+# Your code goes here
+# Both the dplyr and hflights packages are loaded into workspace
+
+
+# Use lut to translate the UniqueCarrier column of hflights
+
+
+# Inspect the resulting raw values of your variables
+
+```
+
+## Changing labels of `hflights`, part 2 of 2
+
+To fix the concepts covered in the previous exercise, you are challenged with a similar exercise and minimal additional help. This time, you are to change the labels in the `CancellationCode` column. This column lists reason why a flight was cancelled and uses a non-informative alphabetical code. To see this, execute `unique(hflights$CancellationCode)` in the console.
+
+```{r}
+# Your code goes here
+
+```
+
+The actual meaning of the codes is the following:
+
+* "A" stands for "carrier",
+* "B" stands for "weather",
+* "C" stands for "FFA" and
+* "D" denotes "security".
+* "E" denotes that the flight was "not cancelled".
+
+
+## Instructions
+
+* Using the information above, create a lookup table `lut` that is able to convert the alphabetical codes into the more meaningful strings.
+
+* Use `lut` to change the labels of the `CancellationCode` column of `hflights`.
+
+* As before, check your results by glimpsing at them.
+
+```{r}
+# Your code goes here
+# Build the lookup table
+
+
+# Use the lookup table to create a vector of code labels. 
+# Assign the vector to the CancellationCode column of hflights
+
+
+# Inspect the resulting raw values of your variables
+
+```
+_________________
